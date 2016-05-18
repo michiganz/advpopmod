@@ -19,5 +19,11 @@ PARAMETER_SECTION
 
 PROCEDURE_SECTION
   ypred = a+b*x;
+  cout << ypred << endl;
   obj_fun = norm2(y-ypred);
 
+REPORT_SECTION
+  report << "y" << endl;
+  report << y << endl;
+  report << "ypred" << endl;
+  report << ypred << endl;
