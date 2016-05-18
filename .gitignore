@@ -1,0 +1,15 @@
+*.cov
+*.dep
+*.hes
+*.log
+*.bar
+*.cor
+*.cpp
+*.eva
+*.exe
+*.htp
+*.obj
+*.par
+*.rep
+*.std
+*variance
