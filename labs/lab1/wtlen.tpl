@@ -27,14 +27,11 @@ DATA_SECTION
   int i
 
   //Read in desired number of a parameters from control (.ctl) file
-  //!! ad_comm::change_datafile_name("wtlen.ctl");
-  //init_int num_apar;
-  //Change subject to 1 if only 1 a parameter
-  //!!if (num_apar==1) for(int i=1;i<=nobs;i++) subject(i) = 1;
-
+  !! ad_comm::change_datafile_name("wtlen.ctl");
+  init_int num_apar;
+  
 PARAMETER_SECTION
-  //init_number log_a;  //For single a parameter
-  init_vector log_a(1,nsubs);   //For subject-unique a parameters
+  init_vector log_a(1,num_apar);
   init_number b;
   
   vector log_weight_pred(1,nobs);
@@ -42,8 +39,8 @@ PARAMETER_SECTION
 
 PROCEDURE_SECTION
   for (i=1;i<=nobs;i++) {
-   //log_weight_pred(i) = log_a + b*log_length(i);}
    log_weight_pred(i) = log_a(subject(i)) + b*log_length(i);}
+  
   obj_fun = norm2(log_weight_pred-log_weight);
 
 REPORT_SECTION
