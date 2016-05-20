@@ -7,7 +7,7 @@
 ###################################
 
 ### STREAMS EXAMPLE ###
-setwd('~/classes/advpopmod/labs/lab3/')
+setwd("C:/Users/pganz/Documents/UAF/advpopmod/labs/lab3")
 library(nlme)
 Streams <- scan('streams.dat',what=list(Stream=0,Density=0),n=3*18,skip=5)
 streams.lm1 <- lm(Density~1,data=Streams)
@@ -34,7 +34,9 @@ abline(h=0)
 
 # plot the fitted values
 library(lattice)
+attach(Streams)
 plot(streams.lme1,Density~fitted(.)|Stream, abline = c(0,1)) 
+detach(Streams)
 
 # diagnostic plots of residuals, random effects
 par(mfrow=c(2,3))
@@ -67,4 +69,49 @@ wtlen.lm1 <- lm(LogWt~LogLen,data=WtLen)
 # linear model, individual ln_a parameters
 wtlen.lm2 <- lm(LogWt~factor(Subject)+LogLen-1,data=WtLen)
 ## linear mixed effects models, lab exercise.
+library(nlme)
+# ln_a as random effect by subject
+wtlen.lme1 <- lme(LogWt~LogLen,random=~1|Subject,data=WtLen,meth="ML")
+# b as random effect by subject
+wtlen.lme2 <- lme(LogWt~LogLen,random=~-1+LogLen|Subject,data=WtLen,meth="ML")
+# compare models using AIC
+AIC(wtlen.lm1,wtlen.lm2,wtlen.lme1,wtlen.lme2)
 
+# based on AIC, wtlen.lm2 is the "best" of all 4 models
+summary.lm(wtlen.lm2)
+
+par(mfrow=c(2,2))
+# QQ plot
+qqnorm(wtlen.lm2$residuals/summary.lm(wtlen.lm2)$sigma,ylab="Quantiles of Residuals")
+qqline(wtlen.lm2$residuals/summary.lm(wtlen.lm2)$sigma)
+
+plot(residuals(wtlen.lm2)/summary.lm(wtlen.lm2)$sigma,ylab="Standardized Residuals")
+hist(residuals(wtlen.lm2)/summary.lm(wtlen.lm2)$sigma,xlab="Standardized Residuals",main="")
+
+#homogeneity of within group variance
+boxplot(split(residuals(wtlen.lm2)/summary.lm(wtlen.lm2)$sigma,Streams$Stream),ylab="Standardized Residual",xlab="Stream",csi=0.2)
+abline(0,0,lwd=3)
+
+# however, if we want an overall mean and between-subject variance, 
+# wtlen.lme1 is the best random effects model based on AIC
+summary(wtlen.lme1)
+coef(wtlen.lme1)
+
+par(mfrow=c(2,3))
+# QQ plot
+qqnorm(wtlen.lme1$residuals/wtlen.lme1$sigma,ylab="Quantiles of Residuals")
+qqline(wtlen.lme1$residuals/wtlen.lme1$sigma)
+
+plot(residuals(wtlen.lme1)/wtlen.lme1$sigma,ylab="Standardized Residuals")
+hist(residuals(wtlen.lme1)/wtlen.lme1$sigma,xlab="Standardized Residuals",main="")
+
+#homogeneity of within group variance
+boxplot(split(residuals(wtlen.lme1)/wtlen.lme1$sigma,WtLen$Subject),ylab="Standardized Residual",xlab="Stream",csi=0.2)
+abline(0,0,lwd=3)
+#normality of the between-group residuals
+re.sigma <- as.numeric(VarCorr(wtlen.lme1)[1,2])
+print(wtlen.lme1$coefficients$random$Subject)
+re<-wtlen.lme1$coefficients$random$Subject/re.sigma  ##/0.6184
+qqnorm(re,ylab="Quantiles of random effects")
+qqline(re)
+hist(wtlen.lme1$coefficients$random$Subject/re.sigma,xlab="random effects",main="")
