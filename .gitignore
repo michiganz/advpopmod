@@ -14,3 +14,15 @@
 *.rep
 *.std
 *variance
+*hesscheck
+*hessian.bin
+*.b01
+*bgs
+*.luu
+*.p01
+*.r01
+*.rhes
+*.b01
+*.b02
+*.r02
+*.p02
