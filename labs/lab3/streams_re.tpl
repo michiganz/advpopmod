@@ -7,6 +7,7 @@
 //////////////////////////////////////////////
 
 DATA_SECTION
+  !! ad_comm::change_datafile_name("streams.dat"); //Use same data as before
   init_int ndata;
   init_int nstreams;
   init_matrix thedata(1,ndata,1,2);
@@ -49,3 +50,5 @@ PROCEDURE_SECTION
 REPORT_SECTION
   report << "random effects" << endl;
   report << sigma_b*b << endl;
+  report << "predicted values (compare to fitted(streams.lme1))" << endl;
+  report << mfexp(ln_beta)+sigma_b*b << endl;
